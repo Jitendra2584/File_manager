@@ -1,0 +1,102 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <!-- Required meta tags -->
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+
+    <!-- Bootstrap CSS -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.3.1/dist/css/bootstrap.min.css" integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
+    <style>
+    .custom-link {
+      background-color: rgb(95, 186, 191);
+      /* Additional custom styles */
+    }
+    body{
+    background-color: #080710;
+    color: white;
+}
+
+    </style>  
+    <title>Home Page</title>
+  </head>
+  <body>
+    
+    <a href="{% url 'home' %}" target="_self" class="btn btn-primary">HOME</a>
+    {% if errors %}
+    <br>
+    <h2>{{errors}}</h2>
+  {% endif %}
+    <form action="/home/" method="POST" enctype="multipart/form-data">
+      {% csrf_token %}
+      <label >Click on the "Choose File" button to upload a file:</label> {{form.file}}
+      <p>Only PDF allowed</p>
+      <button type="submit" class="btn btn-primary">Upload</button>
+      <!-- <input type="file" name="pdf">  -->
+    </form>
+    <h3>Files uploaded by you</h3>
+    <ol>
+      {% for file in files %}
+        <li>
+          <a href="{% url 'access_shared_file' file.unique_link%}" target="_self" class="btn btn-primary custom-link">{{ file.filename }}</a>
+        </li>
+      {% empty %}
+        <li>No files uploaded yet.</li>
+      {% endfor %}
+    </ol>
+    <h3>files shared to you</h3>
+    <ol>
+      {% for file in shared_files %}
+        <li>
+          <a href="{% url 'access_shared_file' file.unique_link%}" target="_self" class="btn btn-primary custom-link">{{ file.filename }}</a><br>
+        </li>
+      {% empty %}
+        <li>No files shared to you yet.</li>
+      {% endfor %}
+    </ol>
+    <a href="{% url 'share' %}" class="btn btn-primary">share a file</a>
+    <a href="{% url 'logout' %}" class="btn btn-primary">Logout</a>
+    <script>
+    // JavaScript code
+window.addEventListener("unload", function() {
+  // Perform an AJAX request to log out the user
+  var xhr = new XMLHttpRequest();
+  xhr.open("POST", "/logout/");  // Replace "/logout/" with your logout URL
+
+  // Include the CSRF token as a header
+  xhr.setRequestHeader("X-Requested-With", "XMLHttpRequest");
+  xhr.setRequestHeader("X-CSRFToken", getCookie("csrftoken"));  // Include the CSRF token as a header
+
+  xhr.onload = function() {
+    // Handle the response if needed
+  };
+
+  xhr.send();
+});
+
+// Function to retrieve the CSRF token from the cookie
+function getCookie(name) {
+  var cookieValue = null;
+  if (document.cookie && document.cookie !== "") {
+    var cookies = document.cookie.split(";");
+
+    for (var i = 0; i < cookies.length; i++) {
+      var cookie = cookies[i].trim();
+      if (cookie.substring(0, name.length + 1) === name + "=") {
+        cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
+        break;
+      }
+    }
+  }
+  return cookieValue;
+}
+</script>
+
+    <!-- Optional JavaScript -->
+    <!-- jQuery first, then Popper.js, then Bootstrap JS -->
+
+  </body>
+</html>
+
+
+
