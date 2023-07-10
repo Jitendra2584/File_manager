@@ -14,10 +14,7 @@
 
     }
     ],
-    "routes":[{
-        "src":"/static/(.*)",
-        "dest":"/static/$1"
-    },
+    "routes":[
     {
         "src":"/(.*)",
         "dest":"File_manager/wsgi.py"
