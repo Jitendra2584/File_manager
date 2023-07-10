@@ -1,0 +1,1 @@
+web: gunicorn file_manager.wsgi --log-file - 
