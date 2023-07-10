@@ -48,6 +48,7 @@ def access_shared_file(request, unique_link):
     return render(request, 'access_shared_file.html', {'file':uploaded_file,'form':comment_form,'comments':comments})
 
 
+
 @login_required(login_url='login')
 def Sharepage(request):
     if request.method=='POST':
@@ -58,8 +59,6 @@ def Sharepage(request):
             return render(request,'success.html')
         else:
             return HttpResponse(form.errors)
-            # file.shared_with.add(form.cleaned_data['shared_with'])
-            # print(form.cleaned_data['shared_with'])
     form=ShareForm(current_user=request.user)
     return render(request, 'share.html', {'form':form})
     
@@ -71,9 +70,9 @@ def SignupPage(request):
         pass1=request.POST.get('password1')
         pass2=request.POST.get('password2')
         if  User.objects.filter(username=uname).exists():
-            return HttpResponse("Your username is already exist!")
+            return HttpResponse("Your username is already exist! or No username Provide")
         if  User.objects.filter(email=email).exists():
-            return HttpResponse("Your email is already exist!")
+            return HttpResponse("Your email is already exist! or no email provide")
         if pass1!=pass2:
             return HttpResponse("Your password and confrom password are not Same!!")
         else:  
