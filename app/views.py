@@ -55,10 +55,11 @@ def Sharepage(request):
         if form.is_valid():
             file=form.cleaned_data['shared_file']
             file.shared_with.add(form.cleaned_data['shared_with'])
+            return render(request,'success.html')
+        else:
+            return HttpResponse(form.errors)
             # file.shared_with.add(form.cleaned_data['shared_with'])
             # print(form.cleaned_data['shared_with'])
-        else:
-            print('wrong')
     form=ShareForm(current_user=request.user)
     return render(request, 'share.html', {'form':form})
     
