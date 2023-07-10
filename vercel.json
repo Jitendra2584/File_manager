@@ -20,7 +20,7 @@
     },
     {
         "src":"/(.*)",
-        "dest":"File_manager/wsgi.py"
+        "dest":"file_manager/wsgi.py"
     }
     ]
 }
