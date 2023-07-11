@@ -56,12 +56,13 @@ def Sharepage(request):
         if form.is_valid():
             file=form.cleaned_data['shared_file']
             file.shared_with.add(form.cleaned_data['shared_with'])
-            return render(request,'success.html')
+            error="file is shared, please return to home page"
+            return render(request,'success.html',{'error':error})
         else:
             return HttpResponse(form.errors)
     form=ShareForm(current_user=request.user)
     return render(request, 'share.html', {'form':form})
-    
+
 
 def SignupPage(request):
     if request.method=='POST':
@@ -70,11 +71,14 @@ def SignupPage(request):
         pass1=request.POST.get('password1')
         pass2=request.POST.get('password2')
         if  User.objects.filter(username=uname).exists():
-            return HttpResponse("Your username is already exist! or No username Provide")
+            error="Your username is already exist! or No username Provide"
+            return render(request,'error.html',{'error':error})
         if  User.objects.filter(email=email).exists():
-            return HttpResponse("Your email is already exist! or no email provide")
+            error="Your email is already exist! or no email provide"
+            return render(request,'error.html',{'error':error})
         if pass1!=pass2:
-            return HttpResponse("Your password and confrom password are not Same!!")
+            error="Your password and confrom password are not Same!!"
+            return render(request,'error.html',{'error':error})
         else:  
             my_user=User.objects.create_user(uname,email,pass1)
             my_user.save()
@@ -90,7 +94,8 @@ def LoginPage(request):
             login(request,user)
             return redirect('home')
         else:
-            return HttpResponse ("Username or Password is incorrect!!!")
+            error="Username or Password is incorrect!!!"
+            return render(request,'error.html',{'error':error})
 
     return render (request,'login.html')
 
