@@ -25,6 +25,41 @@
     </form>
     
     <a href="{% url 'logout' %}" class="btn btn-primary">Logout</a>
+    <script>
+      // JavaScript code
+  window.addEventListener("unload", function() {
+    // Perform an AJAX request to log out the user
+    var xhr = new XMLHttpRequest();
+    xhr.open("POST", "/logout/");  // Replace "/logout/" with your logout URL
+  
+    // Include the CSRF token as a header
+    xhr.setRequestHeader("X-Requested-With", "XMLHttpRequest");
+    xhr.setRequestHeader("X-CSRFToken", getCookie("csrftoken"));  // Include the CSRF token as a header
+  
+    xhr.onload = function() {
+      // Handle the response if needed
+    };
+  
+    xhr.send();
+  });
+  
+  // Function to retrieve the CSRF token from the cookie
+  function getCookie(name) {
+    var cookieValue = null;
+    if (document.cookie && document.cookie !== "") {
+      var cookies = document.cookie.split(";");
+  
+      for (var i = 0; i < cookies.length; i++) {
+        var cookie = cookies[i].trim();
+        if (cookie.substring(0, name.length + 1) === name + "=") {
+          cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
+          break;
+        }
+      }
+    }
+    return cookieValue;
+  }
+  </script>
 
     <!-- Optional JavaScript -->
     <!-- jQuery first, then Popper.js, then Bootstrap JS -->
