@@ -2,6 +2,7 @@ from django.forms import ModelForm
 from django import forms
 from django.contrib.auth.models import User
 from .models import File,Comment
+from django_select2.forms import Select2Widget
 
 # Create the form class.
 class FileForm(ModelForm,forms.Form):
@@ -25,8 +26,8 @@ class Commentform(ModelForm):
         }
 
 class ShareForm(forms.Form):
-    shared_with=forms.ModelChoiceField(queryset=User.objects.all())
-    shared_file=forms.ModelChoiceField(queryset=File.objects.all(),to_field_name='filename')
+    shared_with=forms.ModelChoiceField(queryset=User.objects.all(),widget=Select2Widget)
+    shared_file=forms.ModelChoiceField(queryset=File.objects.all(),to_field_name='filename',widget=Select2Widget)
     def __init__(self, *args, **kwargs):
         current_user = kwargs.pop('current_user', None)
         super(ShareForm, self).__init__(*args, **kwargs)
