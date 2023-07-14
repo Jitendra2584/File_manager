@@ -27,7 +27,7 @@ SECRET_KEY = 'django-insecure-k2=2(^nm)t4$+se=wlu%tb&byl!d53vd-c1i8u9siyy2y!=-0s
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = ['.vercel.app','127.0.0.1','.now.sh']
+ALLOWED_HOSTS = ['Singhjit.pythonanywhere.com','127.0.0.1']
 
 
 # Application definition
@@ -57,7 +57,7 @@ ROOT_URLCONF = 'file_manager.urls'
 TEMPLATES = [
     {
         'BACKEND': 'django.template.backends.django.DjangoTemplates',
-        'DIRS': ['templates'],
+        'DIRS': ['/home/Singhjit/File_manager/templates'],
         'APP_DIRS': True,
         'OPTIONS': {
             'context_processors': [
