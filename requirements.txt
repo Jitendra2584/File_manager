@@ -14,3 +14,4 @@ tzdata==2023.3
 urllib3==2.0.3
 yarg==0.1.9
 django-select2==8.1.2
+six

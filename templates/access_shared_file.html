@@ -19,12 +19,13 @@
         }
         .button-ty {
             background-color: rgb(21, 13, 1);
+        } body{
+          background-color: rgb(128, 187, 151);
         }
-    
         </style>
   </head>
   <body>
-    <a href="{% url 'home' %}" target="_self" class="btn btn-primary">HOME</a>
+    {% include 'navbar.html' %}
     <h5> person who uploaded this  File: {{ file.display_name }}</h5>
 <label for="">File: </label><a href="{{ file.file.url }}" target="_blank" class=" btn btn-primary custom-link">{{ file.filename }}</a>
 <h3>Comments:</h3>
@@ -37,8 +38,6 @@
     <br>
     <button type="submit" class="btn btn-primary button-ty">Comment</button>
 </form>
-<a href="{% url 'share' %}" class="btn btn-primary">share a file</a>
-    <a href="{% url 'logout' %}" class="btn btn-primary">Logout</a>
     <script>
       // JavaScript code
   window.addEventListener("unload", function() {

@@ -3,6 +3,7 @@ from django import forms
 from django.contrib.auth.models import User
 from .models import File,Comment
 from django_select2.forms import Select2Widget
+from django.contrib.auth import get_user_model
 
 # Create the form class.
 class FileForm(ModelForm,forms.Form):
@@ -15,6 +16,22 @@ class FileForm(ModelForm,forms.Form):
         model = File
         fields = ["file"]
 
+
+
+class Userform(ModelForm):
+    password1 = forms.CharField(label='Password', widget=forms.PasswordInput(attrs={'placeholder': 'Enter your password'}),required=True,)
+    password2 = forms.CharField(label='Confirm Password', widget=forms.PasswordInput(attrs={'placeholder': 'Confirm your password'}),required=True)
+    email = forms.EmailField(widget=forms.TextInput(attrs={'placeholder': 'Valid Email only'}), required=True)
+    class Meta: 
+        model = get_user_model()
+        fields = ['username']
+    def save(self, commit=True):
+        user = super(Userform, self).save(commit=False)
+        user.email = self.cleaned_data['email']
+        user.set_password(self.cleaned_data['password1'])
+        if commit:
+            user.save()
+        return user
 
 
 class Commentform(ModelForm):

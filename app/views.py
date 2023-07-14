@@ -1,37 +1,52 @@
 from django.shortcuts import render,HttpResponse,redirect,get_object_or_404,reverse
 from django.contrib.auth.models import User
-from django.contrib.auth import authenticate,login,logout
+from django.contrib.auth import authenticate,login,logout,get_user_model
 from django.contrib.auth.hashers import make_password,check_password
 from django.contrib.auth.decorators import login_required
+from django.contrib import messages
+from django.core.mail import EmailMessage
+from django.template.loader import render_to_string
+from django.contrib.sites.shortcuts import get_current_site
+from django.utils.http import urlsafe_base64_encode, urlsafe_base64_decode
+from django.utils.encoding import force_bytes, force_str
+from .decorators import authenticated_user_required
+from .tokens import account_activation_token
 from .models import File,Comment
-from .forms import FileForm,Commentform,ShareForm
+from .forms import FileForm,Commentform,ShareForm,Userform
+import uuid
+
+
+def check_user(request):
+    if request.user.is_active:
+        return True
+    return False
 
 # Create your views here.
-@login_required(login_url='login')
+@authenticated_user_required
 def HomePage(request):
-    files = File.objects.filter(display_name=request.user)
-    user_id=User.objects.get(username=request.user).id
-    shared_files=File.objects.filter(shared_with=user_id)
-    if request.method=='POST':
-        form=FileForm(request.POST,request.FILES)
-        if form.is_valid():
-            uploaded_file=form.cleaned_data['file']
-            if File.objects.filter(filename=uploaded_file):
-                errors = "please change pdf file name, already exit"
+        files = File.objects.filter(display_name=request.user)
+        user_id=User.objects.get(username=request.user).id 
+        shared_files=File.objects.filter(shared_with=user_id)
+        if request.method=='POST':
+            form=FileForm(request.POST,request.FILES)
+            if form.is_valid():
+                uploaded_file=form.cleaned_data['file']
+                if File.objects.filter(filename=uploaded_file):
+                    errors = "please change pdf file name, already exit"
+                    return render (request,'home.html',{"form":form,"files":files,"shared_files":shared_files,'errors':errors})
+                filename=form.cleaned_data['file']
+                name=request.user
+                file=File(file=uploaded_file,display_name=name,filename=filename)
+                file.save()
+                return redirect(reverse('home'))
+            else:
+                errors = "please provide PDF File Only"
                 return render (request,'home.html',{"form":form,"files":files,"shared_files":shared_files,'errors':errors})
-            filename=form.cleaned_data['file']
-            name=request.user
-            file=File(file=uploaded_file,display_name=name,filename=filename)
-            file.save()
-            return redirect(reverse('home'))
         else:
-            errors = "please provide PDF File Only"
-            return render (request,'home.html',{"form":form,"files":files,"shared_files":shared_files,'errors':errors})
-    else:
-        form=FileForm()
-    return render(request,'home.html',{"form":form,"files":files,"shared_files":shared_files})
+            form=FileForm()
+        return render(request,'home.html',{"form":form,"files":files,"shared_files":shared_files})
 
-@login_required(login_url='login')
+@authenticated_user_required
 def access_shared_file(request, unique_link):
     uploaded_file=File.objects.get(unique_link=unique_link)
     if request.method=='POST':
@@ -48,8 +63,7 @@ def access_shared_file(request, unique_link):
     return render(request, 'access_shared_file.html', {'file':uploaded_file,'form':comment_form,'comments':comments})
 
 
-
-@login_required(login_url='login')
+@authenticated_user_required
 def Sharepage(request):
     if request.method=='POST':
         form = ShareForm(request.POST)
@@ -64,26 +78,78 @@ def Sharepage(request):
     return render(request, 'share.html', {'form':form})
 
 
+
+def activate(request, uidb64, token):
+    User = get_user_model()
+    try:
+        uid = force_str(urlsafe_base64_decode(uidb64))
+        print(uid)
+        user = User.objects.get(pk=uid)
+        print(user)
+    except:
+        user = None
+    if user is not None and account_activation_token.check_token(user, token):
+        user.is_active = True
+        print(user.is_active)
+        user.save()
+        messages.success(request, "Thank you for your email confirmation. Now you can login your account.")
+        errors="your account is activated, thank you. Login now"
+        return render(request,'login.html',{'errors':errors})
+    else:
+        print('wrong none user')
+        messages.error(request, "Activation link is invalid!")
+
+    return redirect('home')
+
+
+def activeEmail(request,user,to_email):
+    mail_subject = "Activate your user account."
+    message = render_to_string("template_activate_account.html", {
+        'user': user.username,
+        'domain': get_current_site(request).domain,
+        'uid': urlsafe_base64_encode(force_bytes(user.pk)),
+        'token': account_activation_token.make_token(user),
+        "protocol": 'https' if request.is_secure() else 'http'
+    })
+    email = EmailMessage(mail_subject, message, to=[to_email])
+    if email.send():
+        messages.success(request, f'Dear <b>{user}</b>, please go to you email <b>{to_email}</b> inbox and click on \
+                received activation link to confirm and complete the registration. <b>Note:</b> Check your spam folder.')
+    else:
+        messages.error(request, f'Problem sending email to {to_email}, check if you typed it correctly.')
+
+
 def SignupPage(request):
     if request.method=='POST':
-        uname=request.POST.get('username')
-        email=request.POST.get('email')
-        pass1=request.POST.get('password1')
-        pass2=request.POST.get('password2')
-        if  User.objects.filter(username=uname).exists():
-            error="Your username is already exist! or No username Provide"
-            return render(request,'error.html',{'error':error})
-        if  User.objects.filter(email=email).exists():
-            error="Your email is already exist! or no email provide"
-            return render(request,'error.html',{'error':error})
-        if pass1!=pass2:
-            error="Your password and confrom password are not Same!!"
-            return render(request,'error.html',{'error':error})
-        else:  
-            my_user=User.objects.create_user(uname,email,pass1)
-            my_user.save()
-            return redirect('login')
-    return render (request,'signup.html')
+        form=Userform(request.POST)
+        if form.is_valid():
+            uname=form.cleaned_data['username']
+            email=form.cleaned_data['email']
+            pass1=form.cleaned_data['password1']
+            pass2=form.cleaned_data['password2']
+            if  User.objects.filter(username=uname).exists():
+                errors="Your username is already exist! or No username Provide"
+                return render (request,'signup.html',{"form":form,'errors':errors})
+            if  User.objects.filter(email=email).exists():
+                errors="Your email is already exist! or no email provide"
+                return render (request,'signup.html',{"form":form,'errors':errors})
+            if pass1!=pass2:
+                errors="Your password and confrom password are not Same!!"
+                return render (request,'signup.html',{"form":form,'errors':errors})
+            else:  
+                my_user=form.save(commit=False)
+                my_user.is_active=False
+                my_user.save()
+                activeEmail(request,my_user,request.POST.get('email'))
+                errors="please activate your account in email"
+                return render(request,'login.html',{"form":form,'errors':errors})
+        else:
+            errors = "please provide valid username  no space only number digit and character"
+            return render (request,'signup.html',{"form":form,'errors':errors})
+    else:
+        form=Userform()
+        return render (request,'signup.html',{'form':form})
+
 
 def LoginPage(request):
     if request.method=='POST':
@@ -91,13 +157,17 @@ def LoginPage(request):
         pass1=request.POST.get('pass')
         user=authenticate(request,username=username,password=pass1)
         if user is not None:
-            login(request,user)
-            return redirect('home')
+            if user.is_active:
+                login(request,user)
+                return redirect('home')
+            else:
+                errors="please activate your account in email"
+                return render(request,'login.html',{'errors':errors})
         else:
             error="Username or Password is incorrect!!!"
             return render(request,'error.html',{'error':error})
-
-    return render (request,'login.html')
+    else:
+        return render(request,'login.html')
 
 def LogoutPage(request):
     logout(request)

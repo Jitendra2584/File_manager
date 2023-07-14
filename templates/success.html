@@ -7,7 +7,8 @@
     <title>success</title>
 </head>
 <body>
-    <a href="{% url 'home' %}" target="_self" class="btn btn-primary">HOME</a>
+  {% include 'navbar.html' %}
+  {{error}}
     <script>
         // JavaScript code
     window.addEventListener("unload", function() {

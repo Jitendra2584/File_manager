@@ -18,6 +18,7 @@
 }
 body{
     background-color: #080710;
+    color: white;
 }
 .background{
     width: 430px;
@@ -139,9 +140,14 @@ button{
         <div class="shape"></div>
         <div class="shape"></div>
     </div>
-    <form method="post">
-        <h3>Login Here</h3>
-        {% csrf_token %} 
+
+    {% if errors %}
+    <br>
+    <h2>{{errors}}</h2>
+  {% endif %}
+    <form method="post" action="/login/">
+        {% csrf_token %}
+        <h3>Login Here</h3> 
         <label for="username">Username</label>
         <input type="text" placeholder="Enter Username" id="username" name="username" required>
 
@@ -149,12 +155,13 @@ button{
         <input type="password" placeholder="Password" id="password" name="pass" required>
 
         <button type="submit">Log In</button>
+        <a href="{% url 'signup' %}" >Create a account</a>
         <!-- <input type="button" value=""> -->
         <!-- <div class="social">
           <div class="go"><i class="fab fa-google"></i>  Google</div>
           <div class="fb"><i class="fab fa-facebook"></i>  Facebook</div>
         </div> -->
-        <a href="{% url 'signup' %}" >Create a account</a>
     </form>
+
 </body>
 </html>

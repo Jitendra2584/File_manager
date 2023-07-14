@@ -132,8 +132,6 @@ PASSWORD_HASHERS = [
     "django.contrib.auth.hashers.ScryptPasswordHasher",
 ]
 
-
-SESSION_COOKIE_AGE = 3600  # 1 hr
 SESSION_EXPIRE_AT_BROWSER_CLOSE = True
 # Internationalization
 # https://docs.djangoproject.com/en/4.2/topics/i18n/
@@ -156,7 +154,11 @@ STATIC_ROOT = BASE_DIR / "staticfiles_build" / "static"
 MEDIA_ROOT = BASE_DIR / "media"
 MEDIA_URL = "/user-media/"
 
-# Default primary key field type
-# https://docs.djangoproject.com/en/4.2/ref/settings/#default-auto-field
 
-# DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
+
+EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
+EMAIL_HOST = 'smtp.gmail.com'
+EMAIL_USE_TLS = True
+EMAIL_PORT = 587
+EMAIL_HOST_USER =  os.getenv('email')
+EMAIL_HOST_PASSWORD = os.getenv('emailp')

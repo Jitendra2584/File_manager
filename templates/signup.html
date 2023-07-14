@@ -18,6 +18,7 @@
 }
 body{
     background-color: #080710;
+    color: white;
 }
 .background{
     width: 430px;
@@ -139,22 +140,29 @@ button{
         <div class="shape"></div>
         <div class="shape"></div>
     </div>
+    {% if errors %}
+    <br>
+    <h2>{{errors}}</h2>
+  {% endif %}
     <form action="" method="post">
         {% csrf_token %} 
         <h3>Signup Here</h3>
-
         <label for="username">Username</label>
-        <input type="text" placeholder="Username" name="username" id="username" required>
+        {{form.username}}
+        <!-- <input type="text" placeholder="Username" name="username" id="username" required> -->
 
         <label for="email">Email</label>
-        <input type="email" placeholder="Email or Phone" name="email" id="email" required>
+        {{form.email}}
+        <!-- <input type="email" placeholder="Email or Phone" name="email" id="email" required> -->
 
         <label for="password1">Password</label>
-        <input type="password" placeholder="Password" id="password1" name="password1" required>
+        {{form.password1}}
+        <!-- <input type="password" placeholder="Password" id="password1" name="password1" required> -->
 
 
-        <label for="password2">Confrom Password</label>
-        <input type="password" placeholder="Confrom Password" id="password2" name="password2" required>
+        <label for="password2">Confirm Password</label>
+        {{form.password2}}
+        <!-- <input type="password" placeholder="Confrom Password" id="password2" name="password2" required> -->
         <button type="submit">Signup</button>
         
         <a href="{% url 'login' %}" >i have already account</a>

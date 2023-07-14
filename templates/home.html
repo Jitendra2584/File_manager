@@ -23,7 +23,7 @@
   </head>
   <body>
     
-    <a href="{% url 'home' %}" target="_self" class="btn btn-primary">HOME</a>
+    {% include 'navbar.html' %}
     {% if errors %}
     <br>
     <h2>{{errors}}</h2>
@@ -55,8 +55,6 @@
         <li>No files shared to you yet.</li>
       {% endfor %}
     </ol>
-    <a href="{% url 'share' %}" class="btn btn-primary">share a file</a>
-    <a href="{% url 'logout' %}" class="btn btn-primary">Logout</a>
     <script>
     // JavaScript code
 window.addEventListener("unload", function() {

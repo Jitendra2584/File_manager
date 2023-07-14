@@ -27,5 +27,6 @@ urlpatterns = [
     path('home/',views.HomePage,name='home'),
     path('logout/',views.LogoutPage,name='logout'),
     path('share/',views.Sharepage,name='share'),
-    path('user-media/uploads/<uuid:unique_link>',views.access_shared_file, name='access_shared_file')
+    path('user-media/uploads/<uuid:unique_link>',views.access_shared_file, name='access_shared_file'),
+    path('activate/<uidb64>/<token>', views.activate, name='activate')
 ]+static(settings.MEDIA_URL,document_root=settings.MEDIA_ROOT)
