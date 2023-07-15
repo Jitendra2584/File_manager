@@ -4,6 +4,9 @@ from django.contrib.auth.models import User
 from .models import File,Comment
 from django_select2.forms import Select2Widget
 from django.contrib.auth import get_user_model
+from django.contrib.auth.forms import UserCreationForm, AuthenticationForm, SetPasswordForm, PasswordResetForm
+from captcha.fields import ReCaptchaField
+from captcha.widgets import ReCaptchaV2Checkbox
 
 # Create the form class.
 class FileForm(ModelForm,forms.Form):
@@ -55,3 +58,16 @@ class ShareForm(forms.Form):
             queryset2 = File.objects.filter(shared_with=user_id)   # Second queryset
             combined_queryset = queryset1.union(queryset2)     # Combine the two querysets
             self.fields['shared_file'].queryset = combined_queryset
+
+
+class SetPasswordForm(SetPasswordForm):
+    class Meta:
+        model = get_user_model()
+        fields = ['new_password1', 'new_password2']
+
+
+class PasswordResetForm(PasswordResetForm):
+    def __init__(self, *args, **kwargs):
+        super(PasswordResetForm, self).__init__(*args, **kwargs)
+
+
