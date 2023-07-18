@@ -1,39 +1,42 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.3.1/dist/css/bootstrap.min.css" integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
-    <title>error</title>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.3.1/dist/css/bootstrap.min.css"
+    integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
+  <title>error</title>
 </head>
+
 <body>
-    {{error}}
-    <a href="{% url 'login' %}" target="_self" class="btn btn-primary">login</a>
-    <a href="{% url 'signup' %}" target="_self" class="btn btn-primary">signup</a>
-    <script>
-        // JavaScript code
-    window.addEventListener("unload", function() {
+  {{error}}
+  <a href="{% url 'login' %}" target="_self" class="btn btn-primary">login</a>
+  <a href="{% url 'signup' %}" target="_self" class="btn btn-primary">signup</a>
+  <script>
+    // JavaScript code
+    window.addEventListener("unload", function () {
       // Perform an AJAX request to log out the user
       var xhr = new XMLHttpRequest();
       xhr.open("POST", "/logout/");  // Replace "/logout/" with your logout URL
-    
+
       // Include the CSRF token as a header
       xhr.setRequestHeader("X-Requested-With", "XMLHttpRequest");
       xhr.setRequestHeader("X-CSRFToken", getCookie("csrftoken"));  // Include the CSRF token as a header
-    
-      xhr.onload = function() {
+
+      xhr.onload = function () {
         // Handle the response if needed
       };
-    
+
       xhr.send();
     });
-    
+
     // Function to retrieve the CSRF token from the cookie
     function getCookie(name) {
       var cookieValue = null;
       if (document.cookie && document.cookie !== "") {
         var cookies = document.cookie.split(";");
-    
+
         for (var i = 0; i < cookies.length; i++) {
           var cookie = cookies[i].trim();
           if (cookie.substring(0, name.length + 1) === name + "=") {
@@ -44,6 +47,7 @@
       }
       return cookieValue;
     }
-    </script>
+  </script>
 </body>
+
 </html>

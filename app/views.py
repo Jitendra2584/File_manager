@@ -85,7 +85,7 @@ def Sharepage(request):
         if form.is_valid():
             file=form.cleaned_data['shared_file']
             file.shared_with.add(form.cleaned_data['shared_with'])
-            error="file is shared, please return to home page"
+            error="File has been shared, Please return to Home Page"
             return render(request,'success.html',{'error':error})
         else:
             return HttpResponse(form.errors)
@@ -143,20 +143,20 @@ def SignupPage(request):
             pass1=form.cleaned_data['password1']
             pass2=form.cleaned_data['password2']
             if  User.objects.filter(username=uname).exists():
-                errors="Your username is already exist! or No username Provide"
+                errors="Your username already exist! or No username Provided"
                 return render (request,'signup.html',{"form":form,'errors':errors})
             if  User.objects.filter(email=email).exists():
-                errors="Your email is already exist! or no email provide"
+                errors="Your email already exist! or no email provided"
                 return render (request,'signup.html',{"form":form,'errors':errors})
             if pass1!=pass2:
-                errors="Your password and confrom password are not Same!!"
+                errors="Your password and confirm password are not Same!!"
                 return render (request,'signup.html',{"form":form,'errors':errors})
             else:  
                 my_user=form.save(commit=False)
                 my_user.is_active=False
                 my_user.save()
                 activeEmail(request,my_user,request.POST.get('email'))
-                errors="please activate your account in email"
+                errors="Please activate your account in email"
                 return render(request,'login.html',{"form":form,'errors':errors})
         else:
             errors = "username either taken or use only  number,digit and character"
@@ -204,14 +204,14 @@ def password_reset_request(request):
                 email = EmailMessage(subject, message, to=[associated_user.email])
                 if email.send():
                         form = PasswordResetForm()
-                        errors="we have send a link please change your password through the link."
+                        errors="We have send a link please change your password through the link."
                         return render(request, "password_reset.html",{"form": form,"errors":errors})
                             
                 else:
                     print("Problem sending reset password email, <b>SERVER PROBLEM</b>")
             # errer k sath
             else:
-                errors="please provide a valid user Email"
+                errors="Please provide a valid user Email"
                 return render(request,"password_reset.html", {"form": form,"errors": errors})    
         else:
             errors=form.errors.values()

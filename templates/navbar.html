@@ -1,29 +1,33 @@
-<nav class="navbar navbar-expand-lg navbar-light bg-info">
+<style>
+    .navbar {
+        position: sticky;
+        top: 0;
+        z-index: 100;
+    }
+</style>
+
+<nav class="navbar navbar-expand-lg navbar-dark bg-dark">
+    <a class="navbar-brand ml-5" href="{% url 'home' %}">File Manager</a>
     <div class="container-fluid">
-        <a class="nav-link active" aria-current="page" href="{% url 'home' %}" style="color: black;">Home</a>
-        <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+        <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNav"
+            aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
             <span class="navbar-toggler-icon"></span>
         </button>
-        <div class="collapse navbar-collapse" id="navbarSupportedContent">
-            <ul class="navbar-nav me-auto mb-2 mb-lg-0">
+        <div class="collapse navbar-collapse mr-5" id="navbarNav">
+            <ul class="navbar-nav ml-auto">
                 <li class="nav-item">
-                    <a class="nav-link active" aria-current="page" href="{% url 'share' %}">Share file</a>
+                    <a class="nav-link" href="{% url 'home' %}">Home</a>
                 </li>
                 <li class="nav-item">
-                    <a class="nav-link active" href="{% url 'logout' %}">Logout</a>
+                    <a class="nav-link" href="{% url 'share' %}">Share File</a>
                 </li>
                 <li class="nav-item">
-                    <a class="nav-link active" href="{% url 'password_change' %}" >Change Password</a>
+                    <a class="nav-link" href="{% url 'logout' %}">Logout</a>
                 </li>
-                
+                <li class="nav-item">
+                    <a class="nav-link" href="{% url 'password_change' %}">Change Password</a>
+                </li>
             </ul>
         </div>
     </div>
 </nav>
-
-<style>
-    .nav-link:hover {
-        background-color: #095a74;
-        height: 100%;
-    }
-</style>
