@@ -46,8 +46,8 @@ class Commentform(ModelForm):
         }
 
 class ShareForm(forms.Form):
-    shared_with=forms.ModelChoiceField(queryset=User.objects.all(),widget=Select2Widget)
-    shared_file=forms.ModelChoiceField(queryset=File.objects.all(),to_field_name='filename',widget=Select2Widget)
+    shared_with=forms.ModelChoiceField(queryset=User.objects.all(),widget=Select2Widget,empty_label='Select a user',)
+    shared_file=forms.ModelChoiceField(queryset=File.objects.all(),to_field_name='filename',widget=Select2Widget,empty_label='Select a File',)
     def __init__(self, *args, **kwargs):
         current_user = kwargs.pop('current_user', None)
         super(ShareForm, self).__init__(*args, **kwargs)
